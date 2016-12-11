@@ -102,13 +102,76 @@ for (index, value) in (5..10).enumerate() {
     println!("index = {0} and value = {1}", index, value);
 }
 
+//ARRAYS - The Rust programming language has arrays, they are just declared slightly differently. Arrays size is known at compile time.
+//Here are some basic examples of array declarations and use of them.
+
+// Fixed-size array which can be changed (mut) and has five elements of type i32 (int32)
+let mut array1: [i32; 5] = [1, 2, 3, 4, 5];
+let element3 = array1[2];							//Accessing an element from the array
+println!("Value of element3 in array1 is {0}", element3);		//Printing it out
+
+array1[0] = 33;										//Assign new value to element one, can only do this because array has 'mut'
+println!("Value of element1 array1 is {0}", array1[0]);	//Printing it out
+
+// All elements can be initialized to the same value. Here we have an array of 10 elements all of type i32 and initialized to 0.
+let mut array2: [i32; 10] = [0; 10];
+
+//Looping and giving each index in the array a value using a while loop.
+let mut count = 0;
+let mut values = 1;
+while count != 10 {
+	array2[count] = values;
+
+	values += 1;
+	count += 1;
+}
+
+println!("Value of index 4 in array2 is {0}", array2[4]); //printing out one of the assigned values
+
+//Then accessing each value with a for loop. Notice we use the syntax '&array2' in the loop. This means we are getting a reference
+//to array2 (borrowinG). Leaving out the '&' symbol means we are taking ownership of array2 and we would get errors. We can also 
+//do the following 'for value in &mut array2'. This a mutable reference to array2.
+let mut index = 0;
+for value in &array2 {
+	println!("The value of index {0} in array2 is {1}", index, value);
+	index += 1;
+}
+
+//Best way allows index and element
+for (i, elem) in array2.iter_mut().enumerate() {
+
+	*elem = i as i32; //i is of usize because it refers to array index and all index are usize. can use 'as i32' to convert it.
+    println!("Index is {0} and element is {1}", i, elem); 
+}
+
 //READING INPUT AND SHOWING OUTPUT
 
-//ARRAYS
+//FORMATTING OUTPUT
+
+//2D ARRAYS
+
+//SLICES - Like in the Go programming language slices also exist in Rust. They are useful for certain tasks. One of those being that
+//we can pass a part of an array into a slice.
+
+// Arrays can be automatically borrowed as slices
+println!("Borrowing the whole array as a slice");
+let slice1 = analyze_slice(&array1);
+println!("Element 1 of Slice 1 has the value {}", slice1[0]);
+
+// Slices can point to a section of an array
+println!("Borrowing a section of the array as a slice"); //Index 1-4 including 1 but not 4.
+let slice2 = analyze_slice(&array2[1 .. 4]);
+println!("Element 2 of Slice 2 has the value {}", slice2[1]);
 
 //VECTORS
 
+//TUPLES
+
 //STRUCTS
+
+//OWNERSHIP
+
+//REFERENCES AND BORROWING
 
 //USE OF CUSTOM FUNCTIONS CREATED IN FUNCTIONS SECTION BELOW THIS main() FUNCTION
 let sum = add_numbers(num1, num3);
@@ -168,3 +231,10 @@ fn return_number(x: i32) -> i32 {
 
 //We can then use the variable f to call the function like so:
 //let six = f(5);
+
+//Function used in the slice section
+fn analyze_slice(slice: &[i32]) -> &[i32] {
+    println!("first element of the slice: {}", slice[0]);
+    println!("the slice has {} elements", slice.len());
+    slice 			//Return the newly created slice.
+}
