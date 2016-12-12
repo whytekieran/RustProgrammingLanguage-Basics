@@ -107,11 +107,14 @@ for (index, value) in (5..10).enumerate() {
 
 // Fixed-size array which can be changed (mut) and has five elements of type i32 (int32)
 let mut array1: [i32; 5] = [1, 2, 3, 4, 5];
+let array3 = [1,2,3,4,5,6,7,8];	//Can also do this way but i prefer to be specific and give the type.
+println!("Element 5 in array3 is {0}", array3[4]);
 let element3 = array1[2];							//Accessing an element from the array
 println!("Value of element3 in array1 is {0}", element3);		//Printing it out
 
 array1[0] = 33;										//Assign new value to element one, can only do this because array has 'mut'
 println!("Value of element1 array1 is {0}", array1[0]);	//Printing it out
+println!("The length of array1 is {0}", array1.len());	//Printing out the length of an array
 
 // All elements can be initialized to the same value. Here we have an array of 10 elements all of type i32 and initialized to 0.
 let mut array2: [i32; 10] = [0; 10];
@@ -132,26 +135,27 @@ println!("Value of index 4 in array2 is {0}", array2[4]); //printing out one of 
 //to array2 (borrowinG). Leaving out the '&' symbol means we are taking ownership of array2 and we would get errors. We can also 
 //do the following 'for value in &mut array2'. This a mutable reference to array2.
 let mut index = 0;
-for value in &array2 {
+//array2 itself must be a mutable reference to change its elements in the loop. If we simply referenced array2 like '&array2' we 
+//would not be able to change the value as it would be immutable
+for value in &mut array2 {	
 	println!("The value of index {0} in array2 is {1}", index, value);
+	*value = 6;	//adding the * symbol makes value a muttable reference to an element of array2.
 	index += 1;
 }
 
 //Best way allows index and element
 for (i, elem) in array2.iter_mut().enumerate() {
 
-	*elem = i as i32; //i is of usize because it refers to array index and all index are usize. can use 'as i32' to convert it.
+	//i is of usize because it refers to array index and all index are usize. can use 'as i32' to convert it. Also 'elem' needs to
+	//be a mutable reference. Adding the * symbol allows this. The iter_mut() function belongs to the slice module and the enumerate()
+	//function belongs to the iter module.
+	*elem = i as i32; 
     println!("Index is {0} and element is {1}", i, elem); 
 }
 
-//READING INPUT AND SHOWING OUTPUT
-
-//FORMATTING OUTPUT
-
-//2D ARRAYS
-
 //SLICES - Like in the Go programming language slices also exist in Rust. They are useful for certain tasks. One of those being that
-//we can pass a part of an array into a slice.
+//we can pass a part of an array into a slice. Slices are efficient as they do not make a copy of the array section assigned to it.
+//Instead they reference that part of the array.
 
 // Arrays can be automatically borrowed as slices
 println!("Borrowing the whole array as a slice");
@@ -160,14 +164,45 @@ println!("Element 1 of Slice 1 has the value {}", slice1[0]);
 
 // Slices can point to a section of an array
 println!("Borrowing a section of the array as a slice"); //Index 1-4 including 1 but not 4.
-let slice2 = analyze_slice(&array2[1 .. 4]);
+let slice2 = analyze_slice(&array2[1 .. 4]);	//The [..] is slicing sytax and creates a view into the section of the array we want
 println!("Element 2 of Slice 2 has the value {}", slice2[1]);
 
-//VECTORS
+//VECTORS - Vectors are very similar to arrays the difference being that they are dynamic or growable in size. This makes them
+//similar to Lists which you see in other languages like Java. Vectors always allocate their data on the heap. For addition examples
+//view the documentation https://doc.rust-lang.org/std/vec/struct.Vec.html where you can find different Vector functions.
+//Vectors are LIFO, You can create them with the vec! macro like so:
+let mut vector1 = vec![1, 2, 3, 4, 5]; 
+//or we can declare the type of the vector during the declaration like so, both will work fine.:
+let mut vector2: Vec<i32> = vec![1, 2, 3, 4, 5, 6, 7, 8];
+//Adding a new value to a vector
+vector1.push(7);
+vector2.push(9);
+println!("Vector1 is {:?}", vector1);
+println!("Vector2 is {:?}", vector2);
+println!("Vector1 length is {0}", vector1.len());
+println!("Element 6 in vector2 is {0}", vector2[5]);
+//Get and remove the last element from the vector. This is 9 and will be returned like 'Some(9)'. Some belongs to the enum type 
+//Option. Option has to values, Some(someValue) and None(noValue). 
+println!("Popping last element inserted into vector2. That element is {:?}", vector2.pop());
+//Quick example of using the Option enum type and an associated function, more info here:https://doc.rust-lang.org/std/option/enum.Option.html
+let x: Option<u32> = Some(2);	//Variable x of type Option<UnsignedInt> that has 'Some' value. (which is two)
+assert_eq!(x.is_some(), true);	//Check if x is a value...which it is. So this is true. If not program would terminate
 
-//TUPLES
+//2D ARRAYS
+
+//READING INPUT AND SHOWING OUTPUT
+
+//FORMATTING OUTPUT
+
+//TUPLES - In Rust programming a Tuple is like an array. The difference being that a Tuple can hold multiple data types. Tuples are
+//useful in certain circumstances, for example we may want to return more than one thing from a function. 
+let tuple1 = (1, "hello", 4.5, true);							//Creating a basic tuple
+println!("The second value in tuple1 is: {0}", tuple1.1);		//Printing out one of its values
+
 
 //STRUCTS
+
+//STRINGS IN RUST
 
 //OWNERSHIP
 
@@ -237,4 +272,13 @@ fn analyze_slice(slice: &[i32]) -> &[i32] {
     println!("first element of the slice: {}", slice[0]);
     println!("the slice has {} elements", slice.len());
     slice 			//Return the newly created slice.
+}
+
+//Function used in the Tuple section
+// Tuples can be used as function arguments and as return values
+fn reverse(pair: (i32, bool)) -> (bool, i32) {
+    // `let` can be used to bind the members of a tuple to variables
+    let (integer, boolean) = pair;
+
+    (boolean, integer)
 }
