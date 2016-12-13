@@ -1,7 +1,9 @@
 //THIS PROGRAM HAS NO PARTICULAR PURPOSE OTHER THAN TO SHOW THE BASICS OF THE RUST PROGRAMMING LANGUAGE
 //THE RUST PROGRAMMING LANGUAGE IS A SYSTEMS PROGRAMMING LANGUAGE WHICH HAS SIMILARITIES WITH 
 //THE C PROGRAMMING LANGUAGE. RUST IS MAINLY AN EXPRESSION BASED LANGUAGE AND HAS FEW STATEMENTS IN IT. 
-//THE DIFFERENCE BEING THAT EXPRESSIONS RETURN A VALUE AND STATEMENTS TO DO
+//THE DIFFERENCE BEING THAT EXPRESSIONS RETURN A VALUE AND STATEMENTS TO DO. THIS PROGRAM SHOWS IVE COVERED THE BASICS OF THE LANGUAGE
+
+//use std::net::TcpStream;
 
 fn main() {
     
@@ -15,6 +17,7 @@ let name = "Kieran";	//String
 let letter = 'a';		//Char
 
 //Variables can also be declared like so:
+//This is called pattern matching and is quite useful in rust
 let (x, y) = (1, 2); //Here x = 1 and y = 2
 println!("X = {0} Y= {1}", x, y);
 
@@ -155,7 +158,7 @@ for (i, elem) in array2.iter_mut().enumerate() {
 
 //SLICES - Like in the Go programming language slices also exist in Rust. They are useful for certain tasks. One of those being that
 //we can pass a part of an array into a slice. Slices are efficient as they do not make a copy of the array section assigned to it.
-//Instead they reference that part of the array.
+//Instead they reference that part of the array. You must use iter() to loop over slices
 
 // Arrays can be automatically borrowed as slices
 println!("Borrowing the whole array as a slice");
@@ -169,7 +172,8 @@ println!("Element 2 of Slice 2 has the value {}", slice2[1]);
 
 //VECTORS - Vectors are very similar to arrays the difference being that they are dynamic or growable in size. This makes them
 //similar to Lists which you see in other languages like Java. Vectors always allocate their data on the heap. For addition examples
-//view the documentation https://doc.rust-lang.org/std/vec/struct.Vec.html where you can find different Vector functions.
+//view the documentation https://doc.rust-lang.org/std/vec/struct.Vec.html where you can find different Vector functions. Like slices
+//you must user iter() to loop over vectors
 //Vectors are LIFO, You can create them with the vec! macro like so:
 let mut vector1 = vec![1, 2, 3, 4, 5]; 
 //or we can declare the type of the vector during the declaration like so, both will work fine.:
@@ -197,16 +201,132 @@ assert_eq!(x.is_some(), true);	//Check if x is a value...which it is. So this is
 //TUPLES - In Rust programming a Tuple is like an array. The difference being that a Tuple can hold multiple data types. Tuples are
 //useful in certain circumstances, for example we may want to return more than one thing from a function. 
 let tuple1 = (1, "hello", 4.5, true);							//Creating a basic tuple
-println!("The second value in tuple1 is: {0}", tuple1.1);		//Printing out one of its values
+let (a,b,c,d) = tuple1; //We can destructure a tuple and access al variables in it in a single expression like so: 
+println!("a: {:?}", a);	//Printing out the values
+println!("b: {:?}", b);
+println!("c: {:?}", c);
+println!("d: {:?}", d);
 
 
-//STRUCTS
+println!("The second value in tuple1 is: {0}", tuple1.1);		//Printing out one of its values, tuple indexing
+// Tuples can also be tuple members
+let tuple_of_tuples = ((1, 2, 3), (4, -1), -2);
+let inner_tuple = tuple_of_tuples.1;			//Then assign one of the inner tuples to another
+println!("Inner tuple element2 is: {0}", inner_tuple.1);			//and index the the inner tuple
 
-//STRINGS IN RUST
+//Here we create a vector of tuples containing two elements and iterate over the vector
+let mut v = Vec::<(i32, f32)>::with_capacity(2);
+v.push((1, 2.5));
+v.push((2, 7.0));
+for &(a, b) in v.iter() {
+    println!("a: {}  b: {}", a, b);
+}
+
+//Here we have an example of using a function the accepts and also returns a tuple. Allowing us to return more than one thing from
+//a function. The function simply reverse the elements of the tuple
+let pair = (1, true);
+println!("pair is {:?}", pair);
+println!("the reversed pair is {:?}", reverse(pair));
+
+//STRUCTS - There are three types of struct in Rust. Tuples are one of them. We can have something called a 'unit struct' and lastly
+//we have the same type of struct that we use in the C programming language.
+
+// A unit struct is fieldless and are useful when used in generics
+struct Nil;
+
+// A tuple struct
+struct Pair(i32, f32);
+
+// A struct with two fields, this is the type of struct we use in the C language
+struct Point {
+    x: f32,
+    y: f32,
+}
+
+// Structs can be reused as fields of another struct (nested structs)
+#[allow(dead_code)]
+struct Rectangle {
+    p1: Point,
+    p2: Point,
+}
+
+// Instantiate a unit struct
+let _nil = Nil;
+
+// Instantiate a tuple struct
+let pair = Pair(1, 0.1);
+println!("{:?}", pair.0);	//Access a value
+
+// Instantiate a `Point` struct
+let point = Point { x: 0.3, y: 0.4 };
+// Access the fields of the point
+println!("point coordinates: ({}, {})", point.x, point.y);
+
+// Destructure the point using a `let` binding
+//let Point { x: my_x, y: my_y } = point;
+
+//Instantiate the rectangle struct
+let _rectangle = Rectangle {
+        p1: Point { x: 0.5, y: 0.8 },
+        p2: Point { x: 0.2, y: 0.7}
+};
+println!("Rectangle P2, Xcord is: {:?}", _rectangle.p2.x);//Accessing value of nested struct
+
+//STRINGS IN RUST - Rust has two main types of strings: &str and String. 
+//First lets mention &str. These are called ‘string slices’. A string slice has a fixed size, and cannot be mutated.
+//"Hello there." is a string literal and its type is &'static str. A string literal is a string slice that is 
+//statically allocated, meaning that it’s saved inside our compiled program, and exists for the entire duration it runs
+let greeting = "Hello there."; // greeting: &'static str
+println!("{:?}", greeting);
+
+//String literals can span multiple lines, this will be printed with the \n as part of it
+let s1 = "foo
+    bar";
+println!("{:?}", s1);
+
+//Adding a / will trim the spaces and newlines
+let s2 = "foo\
+    bar";
+println!("{:?}", s2);
+
+//Next we have the type String which is growable and can be mutated. Strings are commonly created by converting 
+//from a string slice using the to_string() method shown below. 
+let mut s3 = "Hello".to_string(); // mut s: String
+println!("{}", s3);
+
+//Now we can change the string, here we add additional text to it.
+s3.push_str(", world.");
+println!("{}", s3);
+
+//Strings will coerce into &str with an &:
+let s4 = "Hello".to_string();
+takes_slice(&s4);	//This method accepts an &str type. By adding '&' to our string type we convert it to &str.
+
+//This coercion does not happen for functions that accept one of &str’s traits instead of &str. For example, 
+//TcpStream::connect has a parameter of type ToSocketAddrs. A &str is okay but a String must be explicitly converted using &*
+//Here is an example:
+//TcpStream::connect("192.168.0.1:3000"); // &str parameter
+//let addr_string = "192.168.0.1:3000".to_string();
+//TcpStream::connect(&*addr_string); // convert addr_string to &str
+
+//We can loop over the charaters or bytes of a string like so:
+for letter in s3.as_bytes() {
+    print!("{}, ", letter);
+}
+
+for letter in s3.chars() {
+    print!("{}, ", letter);
+}
 
 //OWNERSHIP
 
 //REFERENCES AND BORROWING
+
+//MACROS
+
+//TRAITS
+
+//MATCH
 
 //USE OF CUSTOM FUNCTIONS CREATED IN FUNCTIONS SECTION BELOW THIS main() FUNCTION
 let sum = add_numbers(num1, num3);
@@ -281,4 +401,9 @@ fn reverse(pair: (i32, bool)) -> (bool, i32) {
     let (integer, boolean) = pair;
 
     (boolean, integer)
+}
+
+//String to &str
+fn takes_slice(slice: &str) {
+    println!("Got: {}", slice);
 }
