@@ -5,6 +5,10 @@
 
 //use std::net::TcpStream;
 
+//To perform io operations we need the io module from the std (standard) library.
+use std::io;
+//use std::io::prelude::*;	//Needed for example two of reading user input
+
 fn main() {
     
 //VARIABLES - Section about basic variable types and declarations in the Rust programming language
@@ -194,10 +198,6 @@ assert_eq!(x.is_some(), true);	//Check if x is a value...which it is. So this is
 
 //2D ARRAYS
 
-//READING INPUT AND SHOWING OUTPUT
-
-//FORMATTING OUTPUT
-
 //TUPLES - In Rust programming a Tuple is like an array. The difference being that a Tuple can hold multiple data types. Tuples are
 //useful in certain circumstances, for example we may want to return more than one thing from a function. 
 let tuple1 = (1, "hello", 4.5, true);							//Creating a basic tuple
@@ -334,6 +334,48 @@ println!("Sum is {0}", sum);
 print_sum(num1, num3);
 let returned_num = return_number(10);
 println!("Returned number is {0}", returned_num);
+
+//READING INPUT AND SHOWING OUTPUT - Reading user input whether its from a GUI or simply from the console is important to have index
+//any programming language and Rust is no different. There are different ways we can read user input. This section will show some
+//of these different ways. First we need to import the io module from the standard library with the 'use' keyword. This is shown
+//above the main() method. Here are some examples of reading user input.
+
+//Example 1 - Asks the user to enter there name then prints back a hello message
+let mut input1 = String::new();
+
+println!("Please enter your name: ");
+io::stdin().read_line(&mut input1)
+    .ok()
+    .expect("Couldn't read line");    
+
+println!("hello {}", input1);
+
+
+//Example 2 - Simply keeps accepting user input in an infinite loop, could be modified for other purposes.
+/*let stdin = io::stdin();
+    
+for line in stdin.lock().lines() {
+    println!("{}", line.unwrap());
+}*/
+
+//Example 3 - Gets user input then checks if input is an integer or not. Could be applied to check for other data types not just int.
+//std::io::stdin() returns BufferedReader<StdReader>, and BufferedReader implements Buffer trait. This means that you can 
+//call read_line() method on it:
+
+println!("Please enter an integer: ");
+let mut input_text = String::new();
+io::stdin()
+    .read_line(&mut input_text)
+    .expect("failed to read from stdin");
+
+let trimmed = input_text.trim();
+match trimmed.parse::<u32>() {
+    Ok(i) => println!("Your integer input is: {0}", i),
+    Err(..) => println!("This was not an integer: {0}", trimmed)
+};
+
+
+//FORMATTING OUTPUT
 
 }//End main() function
 
