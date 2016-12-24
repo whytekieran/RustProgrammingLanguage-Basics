@@ -150,6 +150,26 @@ for value in &mut array2 {
 	index += 1;
 }
 
+//2D ARRAYS - Rust has 2D arrays. Here are some examples of how we would create, iterate and access them.
+let mut darray1 = [[0i32; 4]; 5];		//We can decalre types like: 0i32 which is like saying elements are '0' and i32 type.
+let mut darray2 = [[0i32; 4]; 5];		//The type isnt nessesary though, here we declare the exact same 2D array without it.	
+darray1[1][1] = 6;						//Assigning a vlue to index of 2D array
+darray2[0][3] = 3;						//Just assigning some values to the other 2D array before looping over it.
+darray2[2][2] = 7;
+darray2[2][1] = 31;
+println!("2d {:?}", darray1[1][1]);		//Outputting the value of that index.
+
+//Looping over a 2D array
+for row in darray2.iter(){
+	for &col in row.iter(){
+
+		println!("No joy this isnt the value 7!!");
+		if col == 7{
+			println!("Found a value of 7!!");
+		}
+	}
+}
+
 //Best way allows index and element
 for (i, elem) in array2.iter_mut().enumerate() {
 
@@ -196,8 +216,6 @@ println!("Popping last element inserted into vector2. That element is {:?}", vec
 let x: Option<u32> = Some(2);	//Variable x of type Option<UnsignedInt> that has 'Some' value. (which is two)
 assert_eq!(x.is_some(), true);	//Check if x is a value...which it is. So this is true. If not program would terminate
 
-//2D ARRAYS
-
 //TUPLES - In Rust programming a Tuple is like an array. The difference being that a Tuple can hold multiple data types. Tuples are
 //useful in certain circumstances, for example we may want to return more than one thing from a function. 
 let tuple1 = (1, "hello", 4.5, true);							//Creating a basic tuple
@@ -214,7 +232,7 @@ let tuple_of_tuples = ((1, 2, 3), (4, -1), -2);
 let inner_tuple = tuple_of_tuples.1;			//Then assign one of the inner tuples to another
 println!("Inner tuple element2 is: {0}", inner_tuple.1);			//and index the the inner tuple
 
-//Here we create a vector of tuples containing two elements and iterate over the vector
+//Here we create a vector of tuples containing two elements and iterate over the vector Vector declaration Vec
 let mut v = Vec::<(i32, f32)>::with_capacity(2);
 v.push((1, 2.5));
 v.push((2, 7.0));
