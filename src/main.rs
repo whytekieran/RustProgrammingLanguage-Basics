@@ -150,14 +150,31 @@ for value in &mut array2 {
 	index += 1;
 }
 
+//Best way allows index and element
+for (i, elem) in array2.iter_mut().enumerate() {
+
+	//i is of usize because it refers to array index and all index are usize. can use 'as i32' to convert it. Also 'elem' needs to
+	//be a mutable reference. Adding the * symbol allows this. The iter_mut() function belongs to the slice module and the enumerate()
+	//function belongs to the iter module.
+	*elem = i as i32; 
+    println!("Index is {0} and element is {1}", i, elem); 
+}
+
 //2D ARRAYS - Rust has 2D arrays. Here are some examples of how we would create, iterate and access them.
 let mut darray1 = [[0i32; 4]; 5];		//We can decalre types like: 0i32 which is like saying elements are '0' and i32 type.
 let mut darray2 = [[0i32; 4]; 5];		//The type isnt nessesary though, here we declare the exact same 2D array without it.	
+
 darray1[1][1] = 6;						//Assigning a vlue to index of 2D array
 darray2[0][3] = 3;						//Just assigning some values to the other 2D array before looping over it.
 darray2[2][2] = 7;
 darray2[2][1] = 31;
+//darray2 = acceptdarray(&mut darray2);		//Functions that accepts and returns a 2D array. Defined below main() changes index 0,0
+println!("Element 0,0 after function {:?}", darray2[0][0]);		//Output the new value
 println!("2d {:?}", darray1[1][1]);		//Outputting the value of that index.
+
+//Passing reference to a 2D array.
+//let darray_ref: &[[i32; 4]] = &darray1;  //You can the reference to the array like whats shown here
+//println!(" referenced array element 0,1 is {:?}", darray_ref[0][1]);
 
 //Looping over a 2D array
 for row in darray2.iter(){
@@ -168,16 +185,6 @@ for row in darray2.iter(){
 			println!("Found a value of 7!!");
 		}
 	}
-}
-
-//Best way allows index and element
-for (i, elem) in array2.iter_mut().enumerate() {
-
-	//i is of usize because it refers to array index and all index are usize. can use 'as i32' to convert it. Also 'elem' needs to
-	//be a mutable reference. Adding the * symbol allows this. The iter_mut() function belongs to the slice module and the enumerate()
-	//function belongs to the iter module.
-	*elem = i as i32; 
-    println!("Index is {0} and element is {1}", i, elem); 
 }
 
 //SLICES - Like in the Go programming language slices also exist in Rust. They are useful for certain tasks. One of those being that
@@ -466,4 +473,10 @@ fn reverse(pair: (i32, bool)) -> (bool, i32) {
 //String to &str
 fn takes_slice(slice: &str) {
     println!("Got: {}", slice);
+}
+
+//Accepts a 2D array with length of 4. Gives an index a value and returns the array
+fn acceptdarray(x: &mut [[i32; 4]]) -> &[[i32; 4]] {  
+    x[0][0] = 42;
+    x
 }
